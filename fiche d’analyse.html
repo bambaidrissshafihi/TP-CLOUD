@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiche d'analyse – Cloud, séance 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF3F4;--ink:#0F2A30;--mut:#587077;--lag:#0E7C86;--sun:#F2B705;--red:#C23B22;--line:#C9D7DA;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
+h1,h2,.num{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:clamp(28px,5vw,46px);line-height:1.05;margin:0 0 6px;font-weight:800}
+h2{font-size:26px;margin:0 0 12px;font-weight:800}
+.sub{color:var(--mut);margin:0 0 18px}
+.meta{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 18px}
+.meta input{border:0;border-bottom:2px solid var(--line);background:transparent;font:inherit;font-weight:700;padding:4px 2px;min-width:200px}
+.meta input.names{flex:1 1 520px}
+.meter{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2px;background:var(--ink);border-radius:10px;padding:2px;margin-bottom:30px}
+.meter div{background:#0A1D22;padding:14px 16px;border-radius:8px}
+.meter .num{display:block;color:var(--sun);font-size:34px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.meter small{color:#9DB7BC}
+section{background:var(--card);border-radius:10px;padding:22px;margin-bottom:26px;border:1px solid var(--line)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th{text-align:left;font-size:13px;color:var(--mut);font-weight:700;padding:6px 8px;border-bottom:2px solid var(--ink)}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td:nth-child(1),td:nth-child(4){min-width:150px}td:nth-child(5){min-width:200px}
+td textarea{field-sizing:content;width:100%;min-height:48px;border:1px solid transparent;border-radius:5px;background:#F6F9F9;font:inherit;padding:6px 8px;resize:vertical;line-height:1.35}
+.grid input[type=number]{width:100%;border:1px solid transparent;border-radius:5px;background:#F6F9F9;font:inherit;padding:6px 8px}
+td textarea:focus,.grid input:focus,textarea:focus,summary:focus-visible{outline:2px solid var(--lag);outline-offset:1px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:5px 9px;font:inherit;font-size:14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.chips{min-width:300px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:2px 10px;margin:2px 3px 2px 0;font:inherit;font-size:13px;cursor:pointer;color:var(--mut)}
+.chip[aria-pressed=true]{background:var(--lag);border-color:var(--lag);color:#fff}
+.verdict{font-size:14px;min-width:150px}
+.verdict.ok{color:var(--lag);font-weight:700}
+.verdict:not(.ok){color:var(--red)}
+.del{border:0;background:none;font-size:20px;color:var(--mut);cursor:pointer}
+.btn{border:2px solid var(--ink);background:var(--ink);color:#fff;border-radius:8px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+.btn.alt{background:#fff;color:var(--ink)}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:14px 0 4px;background:var(--line)}
+.bar i{display:block;transition:width .3s}
+.legend{font-size:14px;color:var(--mut);display:flex;gap:16px;flex-wrap:wrap}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 18px;margin:16px 0}
+.grid label{display:block;font-size:14px;font-weight:700}
+.grid label span{font-weight:400;color:var(--mut)}
+.grid input[type=range]{width:100%;accent-color:var(--lag)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.cols h3{margin:0 0 6px;font-size:16px}
+.cols .grid{grid-template-columns:1fr 1fr;margin-top:0}
+.tag{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px}
+svg{width:100%;height:auto;display:block}
+textarea{field-sizing:content;width:100%;min-height:90px;border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;background:#F6F9F9}
+textarea.read{min-height:110px;border:0;border-left:5px solid var(--sun);border-radius:0 8px 8px 0;background:#FFF9E0;resize:vertical}
+.note{font-size:14px;color:var(--mut)}
+.cost{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0 6px}
+.cost div{background:#F6F9F9;border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+.cost div:last-child{background:var(--ink);border-color:var(--ink);color:#fff}
+.cost .num{display:block;font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.cost div:last-child .num{color:var(--sun)}
+.cost small{color:var(--mut)}.cost div:last-child small{color:#9DB7BC}
+.viewrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 8px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+@media print{
+ @page{size:A4;margin:8mm}
+ body{background:#fff;font-size:11px;line-height:1.35}
+ main{max-width:none;padding:0}
+ .noprint,.del{display:none!important}
+ .meter{display:none}
+ section{border:0;padding:0;margin:0}
+ section#A{break-after:page}
+ .pb{break-before:page}
+ h1{font-size:24px}
+ h2{font-size:19px;margin:0 0 8px}
+ .sub{margin-bottom:8px}
+ .meta{margin:6px 0 10px}
+ .meta input{font-size:12px}
+ .scroll{overflow:visible}
+ table{min-width:0;width:100%;table-layout:fixed}
+ th:nth-child(1){width:11%} th:nth-child(2){width:15%} th:nth-child(3){width:22%} th:nth-child(4){width:12%} th:nth-child(5){width:28%} th:nth-child(6){width:12%} th:nth-child(7){width:0}
+ th{font-size:10px;padding:4px 5px}
+ td{padding:5px;font-size:10px}
+ td:nth-child(n){min-width:0}
+ td textarea{font-size:10px;padding:2px 4px;min-height:0;border:0;background:transparent;resize:none}
+ .chips{min-width:0}
+ .chip{font-size:9px;padding:1px 6px;margin:1px 2px 1px 0}
+ .seg button{font-size:9.5px;padding:3px 5px}
+ .verdict{font-size:10px;min-width:0}
+ textarea,textarea.read{font-size:10px;min-height:0;resize:none;padding:6px 8px}
+ .grid{margin:8px 0;gap:8px 14px}
+ .grid label{font-size:11px}
+ .cost{margin:10px 0 4px;gap:8px}
+ .cost div{padding:6px 10px}
+ .cost .num{font-size:20px}
+ svg{max-height:50mm}
+ #srcB{min-height:12mm}
+ h2{margin-bottom:6px}
+ .legend{font-size:10px}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Cloud : cartographier et chiffrer</h1>
+<p class="sub">Fiche d'analyse · Introduction au cloud computing, séance 1 · Licence 3 RIST / BDGL</p>
+<div class="meta">
+ <input class="names" aria-label="Noms du groupe" placeholder="Noms" value="DIARRA ABDOULAYE / SORO SANGUINE VICTOIRE LOUISE / BAMBA IDRISS">
+ <input aria-label="Date" placeholder="Date" value="09/10/2026">
+</div>
+
+<div class="meter" aria-live="polite">
+ <div><span class="num" id="m1">–</span><small>services qui cochent les 5 critères</small></div>
+ <div><span class="num" id="m2">–</span><small>mois avant que le serveur physique devienne moins cher</small></div>
+ <div><span class="num" id="m3">–</span><small>coût du cloud par mois</small></div>
+ <div><span class="num" id="m4">–</span><small>coût du serveur par mois, amorti</small></div>
+</div>
+
+<section id="A">
+ <h2>A. Huit services du quotidien, passés au crible du NIST</h2>
+ <div class="scroll">
+ <table>
+  <thead><tr><th>Service</th><th>Modèle</th><th>Caractéristiques observées</th><th>Hébergé chez</th><th>Preuve</th><th>Verdict</th><th></th></tr></thead>
+  <tbody id="tb"></tbody>
+ </table>
+ </div>
+ <p><button class="btn alt noprint" id="add">Ajouter un service</button></p>
+ <div class="bar" id="bar"></div>
+ <div class="legend"><span><b style="background:var(--ink)"></b>IaaS <em id="cI"></em></span><span><b style="background:var(--lag)"></b>PaaS <em id="cP"></em></span><span><b style="background:var(--sun)"></b>SaaS <em id="cS"></em></span></div>
+ <p><label for="cmtA"><b>Ce que nous avons remarqué :</b></label></p>
+ <textarea id="cmtA"></textarea>
+</section>
+
+<section id="B" class="pb">
+ <h2>B. Cloud ou serveur physique : à partir de quand ça change ?</h2>
+ <div class="cols">
+  <div>
+   <h3><i class="tag" style="background:var(--lag)"></i>Cloud : 1 VM + stockage</h3>
+   <div class="grid">
+    <label>VM ($ / heure)<input type="number" id="vm" value="1" step="0.001" min="0"></label>
+    <label>Stockage ($ / Go-mois)<input type="number" id="sto" value="0.08" step="0.01" min="0"></label>
+    <label>Stockage (Go)<input type="number" id="go" value="50" min="0"></label>
+    <label>Utilisation <span id="uo"></span><input type="range" id="usage" min="5" max="100" value="100"></label>
+   </div>
+  </div>
+  <div>
+   <h3><i class="tag" style="background:var(--red)"></i>Serveur physique</h3>
+   <div class="grid">
+    <label>Achat ($)<input type="number" id="capex" value="500" min="0"></label>
+    <label>Durée de vie (mois)<input type="number" id="life" value="36" min="6"></label>
+    <label>Électricité, clim, internet ($ / mois)<input type="number" id="run" value="15" min="0"></label>
+    <label>Administration (h / mois)<input type="number" id="adm" value="8" min="0" step="0.5"></label>
+    <label>Coût horaire d'un admin ($)<input type="number" id="rate" value="27" min="0"></label>
+   </div>
+  </div>
+ </div>
+ <p><label for="srcB"><b>Hypothèses et sources des valeurs saisies :</b></label></p>
+ <textarea id="srcB"></textarea>
+ <div class="cost" aria-live="polite">
+  <div><span class="num" id="k1">–</span><small>VM pour 1 mois</small></div>
+  <div><span class="num" id="k2">–</span><small>Stockage pour 1 mois</small></div>
+  <div><span class="num" id="k3">–</span><small>Total cloud pour 1 mois</small></div>
+ </div>
+ <div class="viewrow noprint"><b>Courbe :</b>
+  <div class="seg"><button id="v1" aria-pressed="true">Sur 1 mois</button><button id="v2" aria-pressed="false">Sur la durée de vie du serveur</button></div>
+ </div>
+ <svg id="chart" viewBox="0 0 640 290" role="img" aria-label="Coût cumulé du cloud et du serveur physique"></svg>
+ <div class="legend" id="leg"></div>
+ <p><label for="obsB"><b>Nos observations sur le graphique et les chiffres :</b></label></p>
+ <textarea id="obsB" class="read">Chiffres (avec les valeurs saisies) :
+- Cloud : 734 $ par mois, dont 730 $ pour la VM (1 $/h × 730 h, utilisation 100 %) et seulement 4 $ pour le stockage (50 Go × 0,08 $). La VM représente 99 % de la facture.
+- Serveur physique : 231 $ par mois (15 $ de fonctionnement + 8 h × 27 $ = 216 $ d'administration). Amorti sur 36 mois (500 $ ÷ 36 = 13,89 $), cela donne 244,89 $ par mois. L'administration pèse à elle seule 93 % du coût mensuel.
+- Le cloud coûte donc environ 3 fois plus cher que le serveur amorti (734 $ contre 245 $).
+
+Graphique :
+- Sur 1 mois, la droite du cloud part de 0 alors que celle du serveur part de 500 $ (achat payé au mois 0). Les deux se rejoignent presque à la fin du mois : 734 $ pour le cloud, 731 $ pour le serveur.
+- Le point jaune est donc à environ 1 mois (500 ÷ (734 − 231) = 0,99 mois). Après ce seuil, le serveur physique reste moins cher.
+- Sur la durée de vie du serveur (36 mois), le cloud cumule 26 424 $ contre 8 816 $ pour le serveur, soit un écart d'environ 17 600 $. L'écart se creuse chaque mois, car la pente du cloud (734 $/mois) est plus forte que celle du serveur (231 $/mois).
+
+Sensibilité : en faisant baisser le curseur d'utilisation, le cloud ne devient moins cher que si la VM est allumée moins d'environ 33 % du temps (environ 240 h par mois, soit 8 h par jour).</textarea>
+ <p><label for="cmtB"><b>Notre conclusion : quand le cloud est-il rentable ?</b></label></p>
+ <textarea id="cmtB">Avec ces valeurs, le cloud n'est pas rentable pour une VM allumée en continu : le serveur physique devient moins cher en un mois environ et reste 3 fois moins cher ensuite. Le cloud est rentable quand l'usage est faible ou irrégulier (moins d'un tiers du temps), car on ne paie que les heures utilisées, sans achat de matériel ni administration. Il est aussi plus adapté aux tests, aux projets courts, aux pics de charge et aux équipes qui ne peuvent pas avancer 500 $ d'achat.
+
+Limites de notre comparaison : le modèle ne compte ni la panne du serveur, ni la sauvegarde, ni la sécurité, ni le remplacement du matériel après 36 mois. Une VM à 1 $/h est aussi probablement bien plus puissante qu'un serveur à 500 $. Notre conclusion : serveur physique pour une charge stable en continu, cloud pour une charge variable ou temporaire, et une solution mixte quand les deux cas existent.</textarea>
+</section>
+
+</main>
+
+<script>
+const FS=!!(window.CSS&&CSS.supports&&CSS.supports("field-sizing","content"));
+const NIST=[["Libre-service","Je crée la ressource moi-même"],["Accès réseau","Via Internet, depuis tout appareil"],["Mutualisation","Mêmes machines pour de nombreux clients"],["Élasticité","Ressources ajoutées ou retirées selon la charge"],["Mesuré","Usage compté et facturé"]];
+let rows=[
+ {n:"Gmail",m:"SaaS",p:"Google",e:"Quota de 15 Go partagé avec Drive et Photos ; forfaits Google One payants au-delà",c:[1,1,1,1,1]},
+ {n:"Netflix",m:"SaaS",p:"AWS",e:"Abonnement mensuel fixe, sans facturation à l'usage ; hébergé sur AWS",c:[1,1,1,1,0]},
+ {n:"GitHub",m:"SaaS",p:"Microsoft Azure",e:"Compte créé en quelques clics, accessible par navigateur ; offre gratuite sans facturation à l'usage",c:[1,1,1,1,0]},
+ {n:"Spotify",m:"SaaS",p:"Google Cloud",e:"Version gratuite avec pub ou abonnement fixe, sans facturation à l'usage",c:[1,1,1,1,0]},
+ {n:"Google Drive",m:"SaaS",p:"Google",e:"Forfaits Google One payants selon le stockage",c:[1,1,1,1,1]},
+ {n:"Microsoft 365",m:"SaaS",p:"Microsoft",e:"Licences payées par utilisateur et par mois ; on en ajoute ou retire selon les besoins",c:[1,1,1,1,1]},
+ {n:"Heroku",m:"PaaS",p:"AWS (propriété de Salesforce)",e:"Je dépose le code, la plateforme gère serveurs et mise à l'échelle ; facturé à l'usage",c:[1,1,1,1,1]},
+ {n:"Amazon EC2",m:"IaaS",p:"AWS",e:"Je choisis l'OS et je gère l'application ; facturé à l'heure",c:[1,1,1,1,1]}
+];
+const $=id=>document.getElementById(id),v=id=>+$(id).value||0;
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const usd=x=>"$"+x.toLocaleString("fr-FR",{maximumFractionDigits:0});
+const score=r=>r.c.reduce((a,b)=>a+b,0);
+const miss=r=>NIST.filter((x,j)=>!r.c[j]).map(x=>x[0].toLowerCase()).join(", ");
+
+function render(){
+ $("tb").innerHTML=rows.map((r,i)=>`<tr>
+ <td><textarea rows="2" data-i="${i}" data-k="n" aria-label="Service">${esc(r.n)}</textarea></td>
+ <td><div class="seg">${["IaaS","PaaS","SaaS"].map(m=>`<button data-i="${i}" data-m="${m}" aria-pressed="${r.m==m}">${m}</button>`).join("")}</div></td>
+ <td class="chips">${NIST.map((x,j)=>`<button class="chip" title="${x[1]}" data-i="${i}" data-c="${j}" aria-pressed="${!!r.c[j]}">${x[0]}</button>`).join("")}</td>
+ <td><textarea rows="2" data-i="${i}" data-k="p" aria-label="Hébergeur">${esc(r.p)}</textarea></td>
+ <td><textarea rows="2" data-i="${i}" data-k="e" aria-label="Preuve">${esc(r.e)}</textarea></td>
+ <td class="verdict ${score(r)==5?"ok":""}">${score(r)==5?"5/5 · cloud":score(r)+"/5 · manque : "+miss(r)}</td>
+ <td><button class="del" data-d="${i}" aria-label="Supprimer">×</button></td></tr>`).join("");
+ summary();fitAll();
+}
+function summary(){
+ const n=rows.length||1,cnt=m=>rows.filter(r=>r.m==m).length;
+ $("bar").innerHTML=[["IaaS","var(--ink)"],["PaaS","var(--lag)"],["SaaS","var(--sun)"]].map(([m,c])=>`<i style="width:${cnt(m)/n*100}%;background:${c}"></i>`).join("");
+ $("cI").textContent=cnt("IaaS");$("cP").textContent=cnt("PaaS");$("cS").textContent=cnt("SaaS");
+ $("m1").textContent=rows.filter(r=>score(r)==5).length+" / "+rows.length;
+}
+$("tb").addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ const i=b.dataset.i;
+ if(b.dataset.m)rows[i].m=b.dataset.m;
+ else if(b.dataset.c!==undefined)rows[i].c[b.dataset.c]=rows[i].c[b.dataset.c]?0:1;
+ else if(b.dataset.d!==undefined)rows.splice(b.dataset.d,1);
+ else return;
+ render();
+});
+$("tb").addEventListener("input",e=>{const t=e.target;if(t.dataset.k)rows[t.dataset.i][t.dataset.k]=t.value});
+$("add").onclick=()=>{rows.push({n:"",m:"SaaS",p:"",e:"",c:[0,0,0,0,0]});render();$("tb").lastElementChild.querySelector("textarea").focus()};
+
+function calc(){
+ const u=v("usage")/100,h=v("vm"),life=v("life")||48;
+ const cm=h*730*u+v("go")*v("sto");
+ const pm=v("run")+v("adm")*v("rate");
+ const cap=v("capex");
+ const be=cm>pm?cap/(cm-pm):null;
+ return{cm,pm,cap,be,life,am:cap/life+pm};
+}
+let view="mois";
+const usd2=x=>"$"+x.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
+function update(){
+ const c=calc(),vmC=v("vm")*730*(v("usage")/100),stC=v("go")*v("sto");
+ $("uo").textContent=v("usage")+" %";
+ $("m2").textContent=c.be===null?"jamais":(c.be<1?"<1":Math.round(c.be));
+ $("m3").textContent=usd(c.cm);$("m4").textContent=usd(c.am);
+ $("k1").textContent=usd2(vmC);$("k2").textContent=usd2(stC);$("k3").textContent=usd2(c.cm);
+ const M=view=="mois",H=M?30:Math.max(48,c.life),W=640,T=290,pl=58,pr=12,pt=12,pb=32;
+ const cl=x=>M?c.cm/30*x:c.cm*x,ph=x=>M?c.cap+c.pm/30*x:c.cap+c.pm*x,am=x=>c.am/30*x;
+ const ymax=Math.max(cl(H),ph(H))*1.06||1;
+ const X=m=>pl+m/H*(W-pl-pr),Y=y=>T-pb-y/ymax*(T-pb-pt);
+ let s="";
+ for(let k=0;k<=4;k++){const y=ymax/4*k;s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(y)}" y2="${Y(y)}" stroke="#C9D7DA"/><text x="${pl-6}" y="${Y(y)+4}" text-anchor="end" font-size="11" fill="#587077">${usd(y)}</text>`}
+ const step=M?5:12;
+ for(let m=0;m<=H;m+=step)s+=`<text x="${X(m)}" y="${T-12}" text-anchor="${m==H?"end":"middle"}" font-size="11" fill="#587077">${m} ${M?"j":"mois"}</text>`;
+ s+=`<line x1="${X(0)}" y1="${Y(cl(0))}" x2="${X(H)}" y2="${Y(cl(H))}" stroke="#0E7C86" stroke-width="3"/>`;
+ s+=`<line x1="${X(0)}" y1="${Y(ph(0))}" x2="${X(H)}" y2="${Y(ph(H))}" stroke="#C23B22" stroke-width="3"/>`;
+ if(M)s+=`<line x1="${X(0)}" y1="${Y(am(0))}" x2="${X(H)}" y2="${Y(am(H))}" stroke="#C23B22" stroke-width="3" stroke-dasharray="7 5"/>`;
+ if(!M&&c.be!==null&&c.be<=H)s+=`<circle cx="${X(c.be)}" cy="${Y(cl(c.be))}" r="7" fill="#F2B705" stroke="#0F2A30" stroke-width="2"/><text x="${X(c.be)}" y="${Y(cl(c.be))-12}" text-anchor="middle" font-size="12" font-weight="700" fill="#0F2A30">mois ${Math.round(c.be)}</text>`;
+ $("chart").innerHTML=s;
+ $("leg").innerHTML=`<span><b style="background:var(--lag)"></b>Cloud, cumul</span><span><b style="background:var(--red)"></b>Serveur physique, achat inclus</span>`+(M?`<span><b style="background:repeating-linear-gradient(90deg,var(--red) 0 3px,#fff 3px 5px)"></b>Serveur physique, amorti sur sa durée de vie</span>`:`<span><b style="background:var(--sun)"></b>Point jaune : le serveur devient moins cher</span>`);
+ $("v1").setAttribute("aria-pressed",M);$("v2").setAttribute("aria-pressed",!M);
+}
+$("v1").onclick=()=>{view="mois";update()};
+$("v2").onclick=()=>{view="vie";update()};
+document.querySelectorAll("#B input").forEach(i=>i.addEventListener("input",update));
+
+
+render();update();
+function fit(t){if(FS){t.style.height="";return}t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"}
+function fitAll(){document.querySelectorAll("textarea").forEach(fit)}
+document.addEventListener("input",e=>{if(e.target.tagName=="TEXTAREA")fit(e.target)});
+window.addEventListener("beforeprint",fitAll);window.addEventListener("resize",fitAll);
+window.addEventListener("load",fitAll);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitAll);
+</script>
+</body>
+</html>
